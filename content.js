@@ -1,26 +1,7 @@
 /**
  * Vinted Favorites Sorted
  * 
- * This script adds fu      console.log('Vinted Favorites Sorted: Catalog page detected');
-      
-      // Add button to sort by favorites
-      setTimeout(addSortButtons, 1500); // Increased to ensure complete loading
-      
-      // Check if we are continuing a previous collection
-      try {
-        chrome.storage.local.get(['vintedItems', 'currentPage', 'isCollecting'], (data) => {
-          if (data.isCollecting) {
-            allItems = data.vintedItems || [];
-            currentPage = data.currentPage || 1;
-            
-            // Continue collection
-            showMessage(`Continuing collection from page ${currentPage}...`);
-            setTimeout(collectAllPages, 2000); // Wait for page loading
-          }
-        });
-      } catch (error) {
-        console.error('Error accessing storage:', error);
-      }Vinted results
+ * This script adds functionality to Vinted's website to sort search results
  * based on the number of favorites each item has received.
  */
 
@@ -135,25 +116,26 @@ function addSortButtons() {
     }
     
     if (sortContainer) {
-      // Create button to sort current page
+      // Instead of adding to sortContainer, always use floating container at bottom left
+      const floatingContainer = document.createElement('div');
+      floatingContainer.id = 'vinted-float-sort-container';
+      floatingContainer.style.cssText = 'position: fixed; bottom: 30px; left: 30px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; background: rgba(255,255,255,0.95); box-shadow: 0 2px 10px rgba(0,0,0,0.08); border-radius: 10px; padding: 16px 12px;';
+
       const sortCurrentButton = document.createElement('button');
       sortCurrentButton.textContent = 'Sort This Page';
       sortCurrentButton.className = 'vinted-sort-button';
-      sortCurrentButton.style.cssText = 'padding: 8px 16px; margin: 8px; background-color: #09B1BA; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background-color 0.3s;';
+      sortCurrentButton.style.cssText = 'padding: 8px 16px; background-color: #09B1BA; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background-color 0.3s;';
       sortCurrentButton.addEventListener('click', sortCurrentPage);
-      
-      // Create button to sort all pages
+
       const sortAllButton = document.createElement('button');
       sortAllButton.textContent = 'Sort All Pages';
       sortAllButton.className = 'vinted-sort-button';
-      sortAllButton.style.cssText = 'padding: 8px 16px; margin: 8px; background-color: #09B1BA; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background-color 0.3s;';
+      sortAllButton.style.cssText = 'padding: 8px 16px; background-color: #09B1BA; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background-color 0.3s;';
       sortAllButton.addEventListener('click', () => {
         if (!isCollecting) {
           isCollecting = true;
           allItems = [];
           currentPage = 1;
-          
-          // Save state
           try {
             chrome.storage.local.set({
               'isCollecting': true,
@@ -163,24 +145,22 @@ function addSortButtons() {
           } catch (error) {
             console.error('Error saving state:', error);
           }
-          
-          // Start collection
           estimateTotalPages();
           collectAllPages();
         }
       });
+
+      floatingContainer.appendChild(sortCurrentButton);
+      floatingContainer.appendChild(sortAllButton);
+      document.body.appendChild(floatingContainer);
       
-      // Add buttons to container
-      sortContainer.appendChild(sortCurrentButton);
-      sortContainer.appendChild(sortAllButton);
-      
-      console.log('Vinted Favorites Sorted: Buttons added');
+      console.log('Vinted Favorites Sorted: Floating buttons added');
     } else {
       console.warn('Vinted Favorites Sorted: Sort container not found');
       
       // Create floating container as fallback
       const floatingContainer = document.createElement('div');
-      floatingContainer.style.cssText = 'position: fixed; top: 70px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;';
+      floatingContainer.style.cssText = 'position: fixed; bottom: 30px; left: 30px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; background: rgba(255,255,255,0.95); box-shadow: 0 2px 10px rgba(0,0,0,0.08); border-radius: 10px; padding: 16px 12px;';
       
       const sortCurrentButton = document.createElement('button');
       sortCurrentButton.textContent = 'Sort This Page';

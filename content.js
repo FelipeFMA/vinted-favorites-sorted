@@ -344,8 +344,29 @@ function collectCurrentPage() {
         let title = '';
         
         if (link) {
-          href = link.getAttribute('href') || '';
-          title = link.getAttribute('title') || link.textContent || '';
+          href = (link.getAttribute('href') || '').trim();
+          // Attempt to get title from 'title' attribute, then link's text content
+          title = (link.getAttribute('title') || link.textContent || '').trim();
+        }
+
+        // If href is empty, this item is not useful for linking to a product page.
+        // Mark for filtering by returning null.
+        if (!href) {
+          // console.warn('Item skipped: Missing href.', item);
+          return null; 
+        }
+
+        // If title is still empty, try from an image alt text within the item
+        if (!title) {
+          const imgTagForTitle = item.querySelector('img[alt]');
+          if (imgTagForTitle && imgTagForTitle.alt) {
+            title = imgTagForTitle.alt.trim();
+          }
+        }
+        
+        // If title is still empty (and href is present), use a default.
+        if (!title) {
+          title = 'Untitled Item';
         }
         
         // Extract favorites - multiple strategies
@@ -371,17 +392,21 @@ function collectCurrentPage() {
         }
         
         // Extract image - multiple strategies
-        let img = item.querySelector('img');
         let imgSrc = '';
-        
-        if (img) {
-          imgSrc = img.getAttribute('src') || '';
-        } else {
-          // Try to find background div with style
+        const imgElement = item.querySelector('img');
+
+        if (imgElement) {
+          // Prioritize data-src for lazy-loaded images, then src
+          imgSrc = imgElement.getAttribute('data-src') || imgElement.getAttribute('src') || '';
+        }
+
+        // If no <img> tag or imgSrc is still empty from <img> attributes, try background image
+        if (!imgSrc) {
           const imgDiv = item.querySelector('div[style*="background-image"]');
           if (imgDiv) {
             const style = imgDiv.getAttribute('style') || '';
-            const match = style.match(/url\(['"]?(.*?)['"]?\)/);
+            // Corrected regex for extracting URL from style
+            const match = style.match(/url\\(['\"]?(.*?)['\"]?\\)/); 
             if (match && match[1]) {
               imgSrc = match[1];
             }
@@ -404,17 +429,17 @@ function collectCurrentPage() {
         const price = priceElement ? priceElement.textContent.trim() : '';
         
         return {
-          title,
-          href,
+          title, // Already trimmed or defaulted
+          href,  // Guaranteed to be non-empty here
           imgSrc,
           price,
           favoriteCount
         };
       } catch (error) {
         console.error('Error extracting item data:', error);
-        return null;
+        return null; // Catch errors during processing of a single item
       }
-    }).filter(item => item !== null);
+    }).filter(item => item !== null); // Filter out items that failed processing OR had no href
     
     return pageItems;
   } catch (error) {
@@ -582,10 +607,14 @@ function showResults(container) {
       // Check if href starts with / for complete URL
       const itemHref = item.href.startsWith('/') ? `https://www.vinted.pt${item.href}` : item.href;
       
+      const imageHTML = item.imgSrc
+        ? `<img src="${item.imgSrc}" style="width: 100%; height: 250px; object-fit: cover;">`
+        : `<div style="width: 100%; height: 250px; background-color: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 16px; text-align: center;">No Image Available</div>`;
+
       itemCard.innerHTML = `
         <a href="${itemHref}" target="_blank" style="text-decoration: none; color: inherit;">
           <div style="position: relative;">
-            <img src="${item.imgSrc}" style="width: 100%; height: 250px; object-fit: cover;">
+            ${imageHTML}
             <div style="position: absolute; top: 10px; right: 10px; background-color: rgba(255,255,255,0.9); border-radius: 20px; padding: 5px 10px;">
               <span style="color: #09B1BA; font-weight: bold; display: flex; align-items: center;">❤️ ${item.favoriteCount}</span>
             </div>

@@ -1,11 +1,30 @@
 /**
- * Vinted Favoritos Ordenados
+ * Vinted Favorites Sorted
  * 
- * Este script adiciona funcionalidade para ordenar os resultados do Vinted
- * com base na quantidade de favoritos que cada item recebeu.
+ * This script adds fu      console.log('Vinted Favorites Sorted: Catalog page detected');
+      
+      // Add button to sort by favorites
+      setTimeout(addSortButtons, 1500); // Increased to ensure complete loading
+      
+      // Check if we are continuing a previous collection
+      try {
+        chrome.storage.local.get(['vintedItems', 'currentPage', 'isCollecting'], (data) => {
+          if (data.isCollecting) {
+            allItems = data.vintedItems || [];
+            currentPage = data.currentPage || 1;
+            
+            // Continue collection
+            showMessage(`Continuing collection from page ${currentPage}...`);
+            setTimeout(collectAllPages, 2000); // Wait for page loading
+          }
+        });
+      } catch (error) {
+        console.error('Error accessing storage:', error);
+      }Vinted results
+ * based on the number of favorites each item has received.
  */
 
-// Variáveis globais
+// Global variables
 let allItems = [];
 let currentPage = 1;
 let isCollecting = false;
@@ -44,18 +63,18 @@ function removeSortButtons() {
   buttons.forEach(button => button.remove());
 }
 
-// Aguardar o carregamento completo da página
+// Wait for complete page loading
 window.addEventListener('load', function() {
   // Check if extension is enabled first
   checkExtensionEnabled(function(isEnabled) {
     if (!isEnabled) {
-      console.log('Vinted Favoritos Ordenados: Extensão desativada');
+      console.log('Vinted Favorites Sorted: Extension disabled');
       return;
     }
     
-    // Verificar se estamos em uma página de resultados de busca ou catálogo
+    // Check if we are on a search results or catalog page
     if (window.location.href.includes('/catalog')) {
-      console.log('Vinted Favoritos Ordenados: Página de catálogo detectada');
+      console.log('Vinted Favorites Sorted: Catalog page detected');
       
       // Adicionar botão para ordenar por favoritos
       setTimeout(addSortButtons, 1500); // Aumentado para garantir carregamento completo
@@ -80,28 +99,28 @@ window.addEventListener('load', function() {
 });
 
 /**
- * Adiciona botões para ordenar por favoritos
+ * Adds buttons to sort by favorites
  */
 function addSortButtons() {
-  try {
+  try {    
     // Check if extension is enabled
     if (!extensionEnabled) {
       return;
     }
     
-    // Verificar se os botões já existem para evitar duplicação
+    // Check if buttons already exist to avoid duplication
     if (document.querySelector('.vinted-sort-button')) {
       return;
     }
     
-    // Encontrar o container de filtros/ordenação - múltiplas estratégias
+    // Find the filter/sort container - multiple strategies
     let sortContainer = document.querySelector('button[data-testid*="sorting"]')?.parentElement;
     
     if (!sortContainer) {
-      // Tentar encontrar pelo texto do botão
+      // Try to find by button text
       const buttons = Array.from(document.querySelectorAll('button'));
       const sortButton = buttons.find(btn => 
-        btn.textContent.includes('Ordenar por') || 
+        btn.textContent.includes('Sort by') || 
         btn.textContent.includes('Sort by')
       );
       
@@ -110,22 +129,22 @@ function addSortButtons() {
       }
     }
     
-    // Última tentativa - procurar por elementos de filtro
+    // Last attempt - look for filter elements
     if (!sortContainer) {
       sortContainer = document.querySelector('.u-flexbox.u-justify-content-flex-start.u-overflow-x-auto');
     }
     
     if (sortContainer) {
-      // Criar botão para ordenar página atual
+      // Create button to sort current page
       const sortCurrentButton = document.createElement('button');
-      sortCurrentButton.textContent = 'Ordenar Esta Página';
+      sortCurrentButton.textContent = 'Sort This Page';
       sortCurrentButton.className = 'vinted-sort-button';
       sortCurrentButton.style.cssText = 'padding: 8px 16px; margin: 8px; background-color: #09B1BA; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background-color 0.3s;';
       sortCurrentButton.addEventListener('click', sortCurrentPage);
       
-      // Criar botão para ordenar todas as páginas
+      // Create button to sort all pages
       const sortAllButton = document.createElement('button');
-      sortAllButton.textContent = 'Ordenar Todas as Páginas';
+      sortAllButton.textContent = 'Sort All Pages';
       sortAllButton.className = 'vinted-sort-button';
       sortAllButton.style.cssText = 'padding: 8px 16px; margin: 8px; background-color: #09B1BA; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background-color 0.3s;';
       sortAllButton.addEventListener('click', () => {
@@ -134,7 +153,7 @@ function addSortButtons() {
           allItems = [];
           currentPage = 1;
           
-          // Salvar estado
+          // Save state
           try {
             chrome.storage.local.set({
               'isCollecting': true,
@@ -142,35 +161,35 @@ function addSortButtons() {
               'currentPage': currentPage
             });
           } catch (error) {
-            console.error('Erro ao salvar estado:', error);
+            console.error('Error saving state:', error);
           }
           
-          // Iniciar coleta
+          // Start collection
           estimateTotalPages();
           collectAllPages();
         }
       });
       
-      // Adicionar botões ao container
+      // Add buttons to container
       sortContainer.appendChild(sortCurrentButton);
       sortContainer.appendChild(sortAllButton);
       
-      console.log('Vinted Favoritos Ordenados: Botões adicionados');
+      console.log('Vinted Favorites Sorted: Buttons added');
     } else {
-      console.warn('Vinted Favoritos Ordenados: Container de ordenação não encontrado');
+      console.warn('Vinted Favorites Sorted: Sort container not found');
       
-      // Criar container flutuante como fallback
+      // Create floating container as fallback
       const floatingContainer = document.createElement('div');
       floatingContainer.style.cssText = 'position: fixed; top: 70px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;';
       
       const sortCurrentButton = document.createElement('button');
-      sortCurrentButton.textContent = 'Ordenar Esta Página';
+      sortCurrentButton.textContent = 'Sort This Page';
       sortCurrentButton.className = 'vinted-sort-button';
       sortCurrentButton.style.cssText = 'padding: 8px 16px; background-color: #09B1BA; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background-color 0.3s;';
       sortCurrentButton.addEventListener('click', sortCurrentPage);
       
       const sortAllButton = document.createElement('button');
-      sortAllButton.textContent = 'Ordenar Todas as Páginas';
+      sortAllButton.textContent = 'Sort All Pages';
       sortAllButton.className = 'vinted-sort-button';
       sortAllButton.style.cssText = 'padding: 8px 16px; background-color: #09B1BA; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background-color 0.3s;';
       sortAllButton.addEventListener('click', () => {
@@ -179,7 +198,7 @@ function addSortButtons() {
           allItems = [];
           currentPage = 1;
           
-          // Iniciar coleta
+          // Start collection
           estimateTotalPages();
           collectAllPages();
         }
@@ -189,15 +208,15 @@ function addSortButtons() {
       floatingContainer.appendChild(sortAllButton);
       document.body.appendChild(floatingContainer);
       
-      console.log('Vinted Favoritos Ordenados: Botões flutuantes adicionados');
+      console.log('Vinted Favorites Sorted: Floating buttons added');
     }
   } catch (error) {
-    console.error('Erro ao adicionar botões:', error);
+    console.error('Error adding buttons:', error);
   }
 }
 
 /**
- * Estima o número total de páginas
+ * Estimates the total number of pages
  */
 function estimateTotalPages() {
   try {
@@ -206,38 +225,38 @@ function estimateTotalPages() {
       const match = paginationText.match(/de\s+(\d+)/);
       if (match && match[1]) {
         const totalItems = parseInt(match[1], 10);
-        totalPages = Math.ceil(totalItems / 96); // Aproximadamente 96 itens por página
-        console.log(`Vinted Favoritos Ordenados: Estimativa de ${totalPages} páginas`);
+        totalPages = Math.ceil(totalItems / 96); // Approximately 96 items per page
+        console.log(`Vinted Favorites Sorted: Estimated ${totalPages} pages`);
       }
     } else {
-      // Tentar encontrar pelos botões de paginação
+      // Try to find by pagination buttons
       const paginationButtons = document.querySelectorAll('.web_ui__Pagination__button');
       if (paginationButtons.length > 0) {
-        const lastButton = paginationButtons[paginationButtons.length - 2]; // O último é "Próxima"
+        const lastButton = paginationButtons[paginationButtons.length - 2]; // The last one is "Next"
         if (lastButton && lastButton.textContent) {
           totalPages = parseInt(lastButton.textContent.trim(), 10) || 5;
         } else {
-          totalPages = 5; // Valor padrão se não conseguir determinar
+          totalPages = 5; // Default value if can't determine
         }
       } else {
-        totalPages = 1; // Apenas uma página
+        totalPages = 1; // Only one page
       }
     }
     
-    // Adicionar barra de progresso
+    // Add progress bar
     const progressBar = document.createElement('div');
     progressBar.className = 'vinted-progress';
     progressBar.style.cssText = 'position: fixed; top: 0; left: 0; height: 4px; background-color: #09B1BA; z-index: 10000; transition: width 0.3s;';
     progressBar.style.width = '0%';
     document.body.appendChild(progressBar);
   } catch (error) {
-    console.error('Erro ao estimar páginas:', error);
-    totalPages = 5; // Valor padrão em caso de erro
+    console.error('Error estimating pages:', error);
+    totalPages = 5; // Default value in case of error
   }
 }
 
 /**
- * Atualiza a barra de progresso
+ * Updates the progress bar
  */
 function updateProgressBar() {
   try {
@@ -249,29 +268,29 @@ function updateProgressBar() {
       }
     }
   } catch (error) {
-    console.error('Erro ao atualizar barra de progresso:', error);
+    console.error('Error updating progress bar:', error);
   }
 }
 
 /**
- * Ordena apenas a página atual por número de favoritos
+ * Sorts only the current page by number of favorites
  */
 function sortCurrentPage() {
   try {
-    showMessage('Ordenando itens da página atual...');
+    showMessage('Sorting current page items...');
     
-    // Selecionar o container de resultados - múltiplas estratégias
+    // Select the results container - multiple strategies
     let resultsContainer = document.querySelector('.feed-grid') || 
                           document.querySelector('[data-testid="item-catalog-items"]');
     
-    // Tentar outras estratégias se não encontrar
+    // Try other strategies if not found
     if (!resultsContainer) {
-      // Procurar por grid de itens
+      // Look for items grid
       resultsContainer = document.querySelector('.web_ui__ItemsGrid__container');
     }
     
     if (!resultsContainer) {
-      // Última tentativa - procurar por qualquer container com muitos itens filhos
+      // Last attempt - look for any container with many child items
       const possibleContainers = Array.from(document.querySelectorAll('div')).filter(div => 
         div.children.length > 10 && 
         Array.from(div.children).some(child => 
@@ -280,7 +299,7 @@ function sortCurrentPage() {
       );
       
       if (possibleContainers.length > 0) {
-        // Usar o container com mais itens
+        // Use the container with most items
         resultsContainer = possibleContainers.reduce((a, b) => 
           a.children.length > b.children.length ? a : b
         );
@@ -288,17 +307,17 @@ function sortCurrentPage() {
     }
     
     if (!resultsContainer) {
-      showMessage('Container de resultados não encontrado', true);
+      showMessage('Results container not found', true);
       return;
     }
     
-    // Obter todos os itens de produto
+    // Get all product items
     const productItems = Array.from(resultsContainer.children);
     
-    // Extrair informações de favoritos para cada item
+    // Extract favorites information for each item
     const itemsWithFavorites = productItems.map(item => {
       try {
-        // Encontrar o botão de favoritos - múltiplas estratégias
+        // Find the favorites button - multiple strategies
         let favoriteButton = item.querySelector('button[data-testid*="product-item-id"][data-testid*="favourite"]');
         
         if (!favoriteButton) {
@@ -309,10 +328,10 @@ function sortCurrentPage() {
           favoriteButton = item.querySelector('button[aria-label*="favorit"]');
         }
         
-        // Extrair o número de favoritos
+        // Extract the number of favorites
         let favoriteCount = 0;
         if (favoriteButton) {
-          // Encontrar o span com o número
+          // Find the span with the number
           const favoriteSpan = favoriteButton.querySelector('span.web_ui__Text__text') || 
                               favoriteButton.querySelector('span:not([class*="Icon"])');
           
@@ -326,7 +345,7 @@ function sortCurrentPage() {
           favorites: favoriteCount
         };
       } catch (error) {
-        console.error('Erro ao processar item:', error);
+        console.error('Error processing item:', error);
         return {
           element: item,
           favorites: 0
@@ -334,32 +353,32 @@ function sortCurrentPage() {
       }
     });
     
-    // Ordenar itens por número de favoritos (decrescente)
+    // Sort items by number of favorites (descending)
     itemsWithFavorites.sort((a, b) => b.favorites - a.favorites);
     
-    // Reordenar os elementos no DOM
+    // Reorder elements in the DOM
     itemsWithFavorites.forEach(item => {
       resultsContainer.appendChild(item.element);
     });
     
-    // Mostrar mensagem de confirmação
-    showMessage(`${itemsWithFavorites.length} itens ordenados por favoritos!`);
+    // Show confirmation message
+    showMessage(`${itemsWithFavorites.length} items sorted by favorites!`);
   } catch (error) {
-    console.error('Erro ao ordenar página atual:', error);
-    showMessage('Erro ao ordenar: ' + error.message, true);
+    console.error('Error sorting current page:', error);
+    showMessage('Error sorting: ' + error.message, true);
   }
 }
 
 /**
- * Coleta itens da página atual
+ * Collects items from the current page
  */
 function collectCurrentPage() {
   try {
-    // Selecionar todos os itens de produto - múltiplas estratégias
+    // Select all product items - multiple strategies
     let items = Array.from(document.querySelectorAll('[data-testid*="product-item"]'));
     
     if (items.length === 0) {
-      // Tentar encontrar itens pelo container
+      // Try to find items by container
       const container = document.querySelector('.feed-grid') || 
                         document.querySelector('[data-testid="item-catalog-items"]') ||
                         document.querySelector('.web_ui__ItemsGrid__container');
@@ -370,7 +389,7 @@ function collectCurrentPage() {
     }
     
     if (items.length === 0) {
-      // Última tentativa - procurar por elementos que parecem ser itens
+      // Last attempt - look for elements that seem to be items
       items = Array.from(document.querySelectorAll('div')).filter(div => 
         div.querySelector('button[data-testid*="favourite"]') || 
         div.querySelector('a[href*="/items/"]')
@@ -379,7 +398,7 @@ function collectCurrentPage() {
     
     const pageItems = items.map(item => {
       try {
-        // Extrair dados do item - múltiplas estratégias
+        // Extract item data - multiple strategies
         let link = item.querySelector('a[href*="/items/"]');
         let href = '';
         let title = '';
@@ -389,7 +408,7 @@ function collectCurrentPage() {
           title = link.getAttribute('title') || link.textContent || '';
         }
         
-        // Extrair favoritos - múltiplas estratégias
+        // Extract favorites - multiple strategies
         let favoriteButton = item.querySelector('button[data-testid*="product-item-id"][data-testid*="favourite"]');
         
         if (!favoriteButton) {
@@ -411,14 +430,14 @@ function collectCurrentPage() {
           }
         }
         
-        // Extrair imagem - múltiplas estratégias
+        // Extract image - multiple strategies
         let img = item.querySelector('img');
         let imgSrc = '';
         
         if (img) {
           imgSrc = img.getAttribute('src') || '';
         } else {
-          // Tentar encontrar div de background com estilo
+          // Try to find background div with style
           const imgDiv = item.querySelector('div[style*="background-image"]');
           if (imgDiv) {
             const style = imgDiv.getAttribute('style') || '';
@@ -429,12 +448,12 @@ function collectCurrentPage() {
           }
         }
         
-        // Extrair preço - múltiplas estratégias
+        // Extract price - multiple strategies
         let priceElement = item.querySelector('.web_ui__Text__subtitle') || 
                           item.querySelector('[data-testid*="price"]');
         
         if (!priceElement) {
-          // Procurar por elementos que parecem conter preço (€)
+          // Look for elements that seem to contain price (€)
           const elements = Array.from(item.querySelectorAll('div, span'));
           priceElement = elements.find(el => 
             el.textContent.includes('€') || 
@@ -452,33 +471,33 @@ function collectCurrentPage() {
           favoriteCount
         };
       } catch (error) {
-        console.error('Erro ao extrair dados do item:', error);
+        console.error('Error extracting item data:', error);
         return null;
       }
     }).filter(item => item !== null);
     
     return pageItems;
   } catch (error) {
-    console.error('Erro ao coletar página atual:', error);
+    console.error('Error collecting current page:', error);
     return [];
   }
 }
 
 /**
- * Coleta itens de todas as páginas
+ * Collects items from all pages
  */
 function collectAllPages() {
   try {
-    // Atualizar barra de progresso
+    // Update progress bar
     updateProgressBar();
     
-    // Coletar itens da página atual
+    // Collect items from current page
     const currentItems = collectCurrentPage();
     allItems = [...allItems, ...currentItems];
     
-    showMessage(`Coletados ${allItems.length} itens (Página ${currentPage}/${totalPages || '?'})...`);
+    showMessage(`Collected ${allItems.length} items (Page ${currentPage}/${totalPages || '?'})...`);
     
-    // Salvar itens coletados até agora
+    // Save collected items so far
     try {
       chrome.storage.local.set({
         'vintedItems': allItems,
@@ -486,16 +505,16 @@ function collectAllPages() {
         'isCollecting': true
       });
     } catch (error) {
-      console.error('Erro ao salvar estado:', error);
+      console.error('Error saving state:', error);
     }
     
-    // Verificar se há próxima página - múltiplas estratégias
+    // Check if there's a next page - multiple strategies
     let nextButton = document.querySelector('a[rel="next"]') || 
-                    document.querySelector('button[aria-label="Próxima página"]') ||
+                    document.querySelector('button[aria-label="Next page"]') ||
                     document.querySelector('.web_ui__Pagination__button--next');
     
     if (!nextButton) {
-      // Procurar por botões de paginação
+      // Look for pagination buttons
       const paginationButtons = Array.from(document.querySelectorAll('.web_ui__Pagination__button'));
       const currentPageButton = paginationButtons.find(btn => 
         btn.getAttribute('aria-current') === 'true' || 
@@ -511,40 +530,40 @@ function collectAllPages() {
     }
     
     if (!nextButton) {
-      // Última tentativa - procurar por texto "Próxima" ou seta
+      // Last attempt - look for "Next" text or arrow
       const buttons = Array.from(document.querySelectorAll('button'));
       nextButton = buttons.find(btn => 
-        btn.textContent.includes('Próxima') || 
+        btn.textContent.includes('Next') || 
         btn.textContent.includes('Next') ||
         btn.innerHTML.includes('→') ||
         btn.innerHTML.includes('&rarr;')
       );
     }
     
-    if (nextButton && currentPage < (totalPages || 100)) { // Limite de segurança
-      // Incrementar página atual
+    if (nextButton && currentPage < (totalPages || 100)) { // Safety limit
+      // Increment current page
       currentPage++;
       
-      // Clicar no botão de próxima página
+      // Click next page button
       nextButton.click();
       
-      // Aguardar carregamento da próxima página
-      setTimeout(collectAllPages, 2500); // Aumentado para garantir carregamento
+      // Wait for next page loading
+      setTimeout(collectAllPages, 2500); // Increased to ensure loading
     } else {
-      // Finalizar coleta e mostrar resultados
+      // Finish collection and show results
       finishCollection();
     }
   } catch (error) {
-    console.error('Erro ao coletar páginas:', error);
-    showMessage('Erro ao coletar páginas: ' + error.message, true);
+    console.error('Error collecting pages:', error);
+    showMessage('Error collecting pages: ' + error.message, true);
     
-    // Limpar estado de coleta
+    // Clear collection state
     try {
       chrome.storage.local.set({
         'isCollecting': false
       });
     } catch (error) {
-      console.error('Erro ao limpar estado:', error);
+      console.error('Error clearing state:', error);
     }
     
     isCollecting = false;
@@ -552,52 +571,52 @@ function collectAllPages() {
 }
 
 /**
- * Finaliza a coleta e mostra os resultados
+ * Finishes collection and shows results
  */
 function finishCollection() {
   try {
-    // Limpar estado de coleta
+    // Clear collection state
     chrome.storage.local.set({
       'isCollecting': false
     });
     
     isCollecting = false;
     
-    // Ordenar todos os itens por favoritos
+    // Sort all items by favorites
     allItems.sort((a, b) => b.favoriteCount - a.favoriteCount);
     
-    // Salvar conteúdo original
+    // Save original content
     const mainContent = document.querySelector('main') || document.body;
     originalContent = mainContent.innerHTML;
     
-    // Criar nova visualização
+    // Create new view
     showResults(mainContent);
   } catch (error) {
-    console.error('Erro ao finalizar coleta:', error);
-    showMessage('Erro ao finalizar: ' + error.message, true);
+    console.error('Error finishing collection:', error);
+    showMessage('Error finishing: ' + error.message, true);
   }
 }
 
 /**
- * Mostra os resultados ordenados
+ * Shows the sorted results
  */
 function showResults(container) {
   try {
-    // Limpar container
+    // Clear container
     container.innerHTML = '';
     
-    // Criar cabeçalho
+    // Create header
     const header = document.createElement('div');
     header.style.cssText = 'padding: 20px; display: flex; justify-content: space-between; align-items: center;';
     
-    // Adicionar título
+    // Add title
     const title = document.createElement('h1');
-    title.textContent = `${allItems.length} itens ordenados por favoritos`;
+    title.textContent = `${allItems.length} items sorted by favorites`;
     title.style.cssText = 'margin: 0; font-size: 24px;';
     
-    // Adicionar botão para voltar
+    // Add back button
     const backButton = document.createElement('button');
-    backButton.textContent = 'Voltar à visualização original';
+    backButton.textContent = 'Return to original view';
     backButton.style.cssText = 'padding: 8px 16px; margin: 20px; background-color: #09B1BA; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;';
     backButton.addEventListener('click', () => {
       container.innerHTML = originalContent;
@@ -608,16 +627,16 @@ function showResults(container) {
     header.appendChild(backButton);
     container.appendChild(header);
     
-    // Criar grid de resultados
+    // Create results grid
     const resultsGrid = document.createElement('div');
     resultsGrid.style.cssText = 'display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; padding: 20px;';
     
-    // Adicionar itens ordenados
+    // Add sorted items
     allItems.forEach(item => {
       const itemCard = document.createElement('div');
       itemCard.style.cssText = 'border: 1px solid #eee; border-radius: 8px; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s;';
       
-      // Verificar se href começa com / para URL completa
+      // Check if href starts with / for complete URL
       const itemHref = item.href.startsWith('/') ? `https://www.vinted.pt${item.href}` : item.href;
       
       itemCard.innerHTML = `
@@ -635,7 +654,7 @@ function showResults(container) {
         </a>
       `;
       
-      // Adicionar hover effect
+      // Add hover effect
       itemCard.addEventListener('mouseenter', () => {
         itemCard.style.transform = 'translateY(-5px)';
         itemCard.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
@@ -651,32 +670,32 @@ function showResults(container) {
     
     container.appendChild(resultsGrid);
     
-    // Remover barra de progresso
+    // Remove progress bar
     const progressBar = document.querySelector('.vinted-progress');
     if (progressBar) {
       progressBar.remove();
     }
     
-    // Mostrar mensagem de conclusão
-    showMessage('Ordenação concluída!');
+    // Show completion message
+    showMessage('Sorting completed!');
   } catch (error) {
-    console.error('Erro ao mostrar resultados:', error);
-    showMessage('Erro ao mostrar resultados: ' + error.message, true);
+    console.error('Error showing results:', error);
+    showMessage('Error showing results: ' + error.message, true);
   }
 }
 
 /**
- * Mostra uma mensagem temporária
+ * Shows a temporary message
  */
 function showMessage(text, isError = false) {
   try {
-    // Remover mensagem anterior se existir
+    // Remove previous message if it exists
     const existingMessage = document.querySelector('.vinted-message');
     if (existingMessage) {
       existingMessage.remove();
     }
     
-    // Criar nova mensagem
+    // Create new message
     const message = document.createElement('div');
     message.style.cssText = 'position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background-color: #09B1BA; color: white; padding: 10px 20px; border-radius: 4px; z-index: 9999; box-shadow: 0 2px 10px rgba(0,0,0,0.2);';
     message.textContent = text;
@@ -687,11 +706,11 @@ function showMessage(text, isError = false) {
     
     document.body.appendChild(message);
     
-    // Remover mensagem após 3 segundos
+    // Remove message after 3 seconds
     setTimeout(() => {
       message.remove();
     }, 3000);
   } catch (error) {
-    console.error('Erro ao mostrar mensagem:', error);
+    console.error('Error showing message:', error);
   }
 }

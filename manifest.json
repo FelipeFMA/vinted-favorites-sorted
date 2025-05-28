@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Vinted Favoritos Ordenados",
+  "name": "Vinted Favorites Sorted",
   "version": "1.0",
-  "description": "Ordena os resultados do Vinted com base na quantidade de favoritos",
+  "description": "Sort Vinted results based on the number of favorites",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
@@ -10,7 +10,7 @@
   },
   "action": {
     "default_icon": "icons/icon48.png",
-    "default_title": "Vinted Favoritos Ordenados",
+    "default_title": "Vinted Favorites Sorted",
     "default_popup": "popup.html"
   },
   "content_scripts": [

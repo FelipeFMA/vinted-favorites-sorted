@@ -1,4 +1,4 @@
-// Popup script for Vinted Favoritos Extension
+// Popup script for Vinted Favorites Extension
 
 document.addEventListener('DOMContentLoaded', function() {
     const toggle = document.getElementById('extensionToggle');
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
      */
     function updateStatus(isEnabled) {
         statusDot.className = 'status-dot ' + (isEnabled ? 'active' : 'inactive');
-        statusText.textContent = isEnabled ? 'Extensão ativa' : 'Extensão desativada';
+        statusText.textContent = isEnabled ? 'Extension active' : 'Extension disabled';
         
         // Add a subtle animation
         statusDot.style.transform = 'scale(1.2)';

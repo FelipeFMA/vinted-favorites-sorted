@@ -1,104 +1,104 @@
-# Vinted Favoritos Ordenados
+# Vinted Favorites Sorted
 
-Uma extensão para o navegador que permite ordenar os resultados do Vinted com base na quantidade de favoritos que cada item recebeu.
+A browser extension that allows you to sort Vinted results based on the number of favorites each item has received.
 
-## Funcionalidades
+## Features
 
-- **Controle de Ativação**: Clique no ícone da extensão para abrir um menu onde pode ativar/desativar a extensão
-- **Interface Moderna**: Menu popup com design moderno e intuitivo
-- **Ordenar Página Atual**: Reorganiza os itens da página atual com base no número de favoritos (do maior para o menor)
-- **Ordenar Todas as Páginas**: Coleta itens de todas as páginas de resultados e os apresenta ordenados por número de favoritos
-- **Visualização Personalizada**: Exibe os resultados em um layout limpo e organizado, destacando o número de favoritos
-- **Feedback Visual**: Mostra o progresso da coleta e mensagens de status durante o processo
+- **Activation Control**: Click the extension icon to open a menu where you can enable/disable the extension
+- **Modern Interface**: Popup menu with modern and intuitive design
+- **Sort Current Page**: Reorganizes items on the current page based on the number of favorites (from highest to lowest)
+- **Sort All Pages**: Collects items from all result pages and presents them sorted by number of favorites
+- **Custom View**: Displays results in a clean and organized layout, highlighting the number of favorites
+- **Visual Feedback**: Shows collection progress and status messages during the process
 
-## Instalação
+## Installation
 
 ### Google Chrome / Microsoft Edge
 
-1. Faça o download do arquivo ZIP e extraia-o em uma pasta no seu computador
-2. Abra o navegador e acesse `chrome://extensions/` (Chrome) ou `edge://extensions/` (Edge)
-3. Ative o "Modo do desenvolvedor" no canto superior direito
-4. Clique em "Carregar sem compactação" e selecione a pasta onde você extraiu os arquivos
-5. A extensão será instalada e aparecerá na barra de ferramentas do navegador
+1. Download the ZIP file and extract it to a folder on your computer
+2. Open your browser and go to `chrome://extensions/` (Chrome) or `edge://extensions/` (Edge)
+3. Enable "Developer mode" in the top right corner
+4. Click "Load unpacked" and select the folder where you extracted the files
+5. The extension will be installed and appear in the browser toolbar
 
 ### Mozilla Firefox
 
-1. Faça o download do arquivo ZIP e extraia-o em uma pasta no seu computador
-2. Abra o Firefox e acesse `about:debugging#/runtime/this-firefox`
-3. Clique em "Carregar extensão temporária"
-4. Navegue até a pasta onde você extraiu os arquivos e selecione o arquivo `manifest.json`
-5. A extensão será instalada temporariamente (será removida quando você fechar o Firefox)
+1. Download the ZIP file and extract it to a folder on your computer
+2. Open Firefox and go to `about:debugging#/runtime/this-firefox`
+3. Click "Load Temporary Add-on"
+4. Navigate to the folder where you extracted the files and select the `manifest.json` file
+5. The extension will be temporarily installed (it will be removed when you close Firefox)
 
-## Como Usar
+## How to Use
 
-1. Acesse o site [Vinted Portugal](https://www.vinted.pt/)
-2. Clique no ícone da extensão na barra de ferramentas para abrir o menu popup
-3. Certifique-se de que a extensão está ativada (toggle verde)
-4. Faça uma busca por qualquer termo (ex: "nike", "zara", etc.)
-5. Na página de resultados, você verá dois novos botões:
-   - **Ordenar Esta Página**: Reorganiza apenas os itens visíveis na página atual
-   - **Ordenar Todas as Páginas**: Coleta e ordena itens de todas as páginas de resultados
+1. Go to [Vinted Portugal](https://www.vinted.pt/)
+2. Click the extension icon in the toolbar to open the popup menu
+3. Make sure the extension is enabled (green toggle)
+4. Search for any term (e.g., "nike", "zara", etc.)
+5. On the results page, you will see two new buttons:
+   - **Sort This Page**: Reorganizes only the visible items on the current page
+   - **Sort All Pages**: Collects and sorts items from all result pages
 
-### Controle da Extensão
+### Extension Control
 
-- **Ativar/Desativar**: Use o toggle no menu popup para ativar ou desativar a extensão
-- **Status Visual**: O menu mostra o status atual da extensão (ativa/inativa)
-- **Controle Rápido**: Quando desativada, os botões de ordenação não aparecerão nas páginas
+- **Enable/Disable**: Use the toggle in the popup menu to enable or disable the extension
+- **Visual Status**: The menu shows the current status of the extension (active/inactive)
+- **Quick Control**: When disabled, sorting buttons will not appear on pages
 
-### Ordenar Página Atual
+### Sort Current Page
 
-- Clique em "Ordenar Esta Página"
-- Os itens serão instantaneamente reorganizados com base no número de favoritos
-- Não há necessidade de esperar ou navegar entre páginas
+- Click "Sort This Page"
+- Items will be instantly reorganized based on the number of favorites
+- No need to wait or navigate between pages
 
-### Ordenar Todas as Páginas
+### Sort All Pages
 
-- Clique em "Ordenar Todas as Páginas"
-- A extensão começará a coletar itens da página atual
-- Em seguida, navegará automaticamente para as próximas páginas
-- Uma barra de progresso no topo da página mostrará o status da coleta
-- Quando a coleta for concluída, todos os itens serão exibidos em uma nova visualização, ordenados por número de favoritos
-- Para voltar à visualização original, clique no botão "Voltar à visualização original"
+- Click "Sort All Pages"
+- The extension will start collecting items from the current page
+- Then it will automatically navigate to the next pages
+- A progress bar at the top of the page will show the collection status
+- When collection is complete, all items will be displayed in a new view, sorted by number of favorites
+- To return to the original view, click the "Return to original view" button
 
-## Observações
+## Notes
 
-- A coleta de todas as páginas pode levar algum tempo, dependendo do número de resultados
-- Se você fechar a página durante a coleta, o processo será interrompido
-- A extensão funciona apenas no domínio `vinted.pt`
-- Os dados coletados são armazenados apenas localmente no seu navegador
+- Collecting all pages may take some time, depending on the number of results
+- If you close the page during collection, the process will be interrupted
+- The extension only works on the `vinted.pt` domain
+- Collected data is stored only locally in your browser
 
-## Solução de Problemas
+## Troubleshooting
 
-Se a extensão não funcionar corretamente:
+If the extension doesn't work correctly:
 
-1. Verifique se você está no site correto (vinted.pt)
-2. Certifique-se de que está em uma página de resultados de busca ou catálogo
-3. Tente recarregar a página
-4. Se o problema persistir, reinstale a extensão
+1. Check if you are on the correct site (vinted.pt)
+2. Make sure you are on a search results or catalog page
+3. Try reloading the page
+4. If the problem persists, reinstall the extension
 
-## Privacidade
+## Privacy
 
-Esta extensão:
-- Não coleta dados pessoais
-- Não envia informações para servidores externos
-- Funciona completamente offline, após a instalação
-- Armazena temporariamente apenas os dados dos itens para ordenação
+This extension:
+- Does not collect personal data
+- Does not send information to external servers
+- Works completely offline after installation
+- Temporarily stores only item data for sorting
 
-## Desenvolvimento
+## Development
 
-Esta extensão foi desenvolvida usando JavaScript puro e APIs padrão de extensões de navegador. O código-fonte está organizado da seguinte forma:
+This extension was developed using pure JavaScript and standard browser extension APIs. The source code is organized as follows:
 
-- `manifest.json`: Configuração da extensão
-- `content.js`: Script principal que executa no contexto da página
-- `styles.css`: Estilos para os elementos adicionados pela extensão
-- `icon16.png`, `icon48.png`, `icon128.png`: Ícones da extensão
+- `manifest.json`: Extension configuration
+- `content.js`: Main script that runs in the page context
+- `styles.css`: Styles for elements added by the extension
+- `icon16.png`, `icon48.png`, `icon128.png`: Extension icons
 
-## Limitações Conhecidas
+## Known Limitations
 
-- A extensão pode parar de funcionar se o Vinted alterar significativamente a estrutura do seu site
-- Em buscas com muitas páginas, o processo de coleta pode ser demorado
-- A extensão não mantém o estado entre sessões do navegador (exceto durante coletas em andamento)
+- The extension may stop working if Vinted significantly changes its site structure
+- In searches with many pages, the collection process can be time-consuming
+- The extension does not maintain state between browser sessions (except during ongoing collections)
 
-## Licença
+## License
 
-Esta extensão é fornecida como está, sem garantias. Você pode usá-la e modificá-la livremente para uso pessoal.
+This extension is provided as is, without warranties. You can use and modify it freely for personal use.

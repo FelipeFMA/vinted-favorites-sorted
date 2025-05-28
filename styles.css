@@ -1,0 +1,75 @@
+/* Estilos para a extensão Vinted Favoritos Ordenados */
+
+.vinted-sort-button {
+  padding: 8px 16px;
+  margin: 8px;
+  background-color: #09B1BA;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.vinted-sort-button:hover {
+  background-color: #07858c;
+}
+
+.vinted-message {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #09B1BA;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 4px;
+  z-index: 9999;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.vinted-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 4px;
+  background-color: #09B1BA;
+  z-index: 10000;
+  transition: width 0.3s;
+}
+
+.vinted-item-card {
+  border: 1px solid #eee;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.vinted-item-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.vinted-favorites-count {
+  color: #09B1BA;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+}
+
+.vinted-favorites-count::before {
+  content: '❤️';
+  margin-right: 5px;
+}
+
+.vinted-back-button {
+  padding: 8px 16px;
+  margin: 20px;
+  background-color: #09B1BA;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}

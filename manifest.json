@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "Vinted Favoritos Ordenados",
+  "version": "1.0",
+  "description": "Ordena os resultados do Vinted com base na quantidade de favoritos",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_icon": "icons/icon48.png",
+    "default_title": "Vinted Favoritos Ordenados"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.vinted.pt/*"],
+      "js": ["content.js"],
+      "css": ["styles.css"]
+    }
+  ],
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "*://*.vinted.pt/*"
+  ]
+}

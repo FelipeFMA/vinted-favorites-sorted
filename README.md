@@ -11,6 +11,10 @@ A browser extension that allows you to sort Vinted results based on the number o
 - **Custom View**: Displays results in a clean and organized layout, highlighting the number of favorites
 - **Visual Feedback**: Shows collection progress and status messages during the process
 
+## Motivation
+
+This project was developed as a paid commission for a client who requested this specific functionality.
+
 ## Installation
 
 ### Google Chrome / Microsoft Edge
@@ -100,5 +104,7 @@ This extension was developed using pure JavaScript and standard browser extensio
 - The extension does not maintain state between browser sessions (except during ongoing collections)
 
 ## License
+
+This project is licensed under the GNU General Public License v3.0 (GPLv3).
 
 This extension is provided as is, without warranties. You can use and modify it freely for personal use.

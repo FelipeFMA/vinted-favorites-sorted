@@ -4,6 +4,8 @@ Uma extensão para o navegador que permite ordenar os resultados do Vinted com b
 
 ## Funcionalidades
 
+- **Controle de Ativação**: Clique no ícone da extensão para abrir um menu onde pode ativar/desativar a extensão
+- **Interface Moderna**: Menu popup com design moderno e intuitivo
 - **Ordenar Página Atual**: Reorganiza os itens da página atual com base no número de favoritos (do maior para o menor)
 - **Ordenar Todas as Páginas**: Coleta itens de todas as páginas de resultados e os apresenta ordenados por número de favoritos
 - **Visualização Personalizada**: Exibe os resultados em um layout limpo e organizado, destacando o número de favoritos
@@ -30,10 +32,18 @@ Uma extensão para o navegador que permite ordenar os resultados do Vinted com b
 ## Como Usar
 
 1. Acesse o site [Vinted Portugal](https://www.vinted.pt/)
-2. Faça uma busca por qualquer termo (ex: "nike", "zara", etc.)
-3. Na página de resultados, você verá dois novos botões:
+2. Clique no ícone da extensão na barra de ferramentas para abrir o menu popup
+3. Certifique-se de que a extensão está ativada (toggle verde)
+4. Faça uma busca por qualquer termo (ex: "nike", "zara", etc.)
+5. Na página de resultados, você verá dois novos botões:
    - **Ordenar Esta Página**: Reorganiza apenas os itens visíveis na página atual
    - **Ordenar Todas as Páginas**: Coleta e ordena itens de todas as páginas de resultados
+
+### Controle da Extensão
+
+- **Ativar/Desativar**: Use o toggle no menu popup para ativar ou desativar a extensão
+- **Status Visual**: O menu mostra o status atual da extensão (ativa/inativa)
+- **Controle Rápido**: Quando desativada, os botões de ordenação não aparecerão nas páginas
 
 ### Ordenar Página Atual
 

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vinted Favoritos Ordenados</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="popup-container">
+        <div class="header">
+            <img src="icons/icon48.png" alt="Vinted Favoritos" class="logo">
+            <h1>Vinted Favoritos</h1>
+        </div>
+        
+        <div class="content">
+            <div class="toggle-section">
+                <label class="toggle-label">
+                    <span class="toggle-text">Ativar extensão</span>
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="extensionToggle" class="toggle-input">
+                        <span class="toggle-slider"></span>
+                    </div>
+                </label>
+            </div>
+            
+            <div class="status-section">
+                <div class="status-indicator">
+                    <div class="status-dot" id="statusDot"></div>
+                    <span class="status-text" id="statusText">Carregando...</span>
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <p class="description">
+                    Esta extensão ordena os resultados do Vinted com base na quantidade de favoritos.
+                </p>
+                
+                <div class="features">
+                    <div class="feature-item">
+                        <span class="feature-icon">⭐</span>
+                        <span>Ordenação por favoritos</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🔄</span>
+                        <span>Atualização automática</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">⚡</span>
+                        <span>Interface rápida</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="version">v1.0</div>
+        </div>
+    </div>
+    
+    <script src="popup.js"></script>
+</body>
+</html>

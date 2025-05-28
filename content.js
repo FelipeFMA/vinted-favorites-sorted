@@ -11,32 +11,72 @@ let currentPage = 1;
 let isCollecting = false;
 let totalPages = 0;
 let originalContent = '';
+let extensionEnabled = true; // Default to enabled
+
+// Check if extension is enabled
+function checkExtensionEnabled(callback) {
+  chrome.storage.local.get(['extensionEnabled'], function(result) {
+    extensionEnabled = result.extensionEnabled !== false; // Default to true
+    if (callback) callback(extensionEnabled);
+  });
+}
+
+// Listen for messages from popup
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  if (request.action === 'toggleExtension') {
+    extensionEnabled = request.enabled;
+    
+    if (extensionEnabled) {
+      // Re-add buttons if extension is enabled
+      setTimeout(addSortButtons, 500);
+    } else {
+      // Remove buttons if extension is disabled
+      removeSortButtons();
+    }
+    
+    sendResponse({status: 'success'});
+  }
+});
+
+// Function to remove sort buttons
+function removeSortButtons() {
+  const buttons = document.querySelectorAll('.vinted-sort-button');
+  buttons.forEach(button => button.remove());
+}
 
 // Aguardar o carregamento completo da página
 window.addEventListener('load', function() {
-  // Verificar se estamos em uma página de resultados de busca ou catálogo
-  if (window.location.href.includes('/catalog')) {
-    console.log('Vinted Favoritos Ordenados: Página de catálogo detectada');
-    
-    // Adicionar botão para ordenar por favoritos
-    setTimeout(addSortButtons, 1500); // Aumentado para garantir carregamento completo
-    
-    // Verificar se estamos continuando uma coleta anterior
-    try {
-      chrome.storage.local.get(['vintedItems', 'currentPage', 'isCollecting'], (data) => {
-        if (data.isCollecting) {
-          allItems = data.vintedItems || [];
-          currentPage = data.currentPage || 1;
-          
-          // Continuar coleta
-          showMessage(`Continuando coleta da página ${currentPage}...`);
-          setTimeout(collectAllPages, 2000); // Aguardar carregamento da página
-        }
-      });
-    } catch (error) {
-      console.error('Erro ao acessar storage:', error);
+  // Check if extension is enabled first
+  checkExtensionEnabled(function(isEnabled) {
+    if (!isEnabled) {
+      console.log('Vinted Favoritos Ordenados: Extensão desativada');
+      return;
     }
-  }
+    
+    // Verificar se estamos em uma página de resultados de busca ou catálogo
+    if (window.location.href.includes('/catalog')) {
+      console.log('Vinted Favoritos Ordenados: Página de catálogo detectada');
+      
+      // Adicionar botão para ordenar por favoritos
+      setTimeout(addSortButtons, 1500); // Aumentado para garantir carregamento completo
+      
+      // Verificar se estamos continuando uma coleta anterior
+      try {
+        chrome.storage.local.get(['vintedItems', 'currentPage', 'isCollecting'], (data) => {
+          if (data.isCollecting) {
+            allItems = data.vintedItems || [];
+            currentPage = data.currentPage || 1;
+            
+            // Continuar coleta
+            showMessage(`Continuando coleta da página ${currentPage}...`);
+            setTimeout(collectAllPages, 2000); // Aguardar carregamento da página
+          }
+        });
+      } catch (error) {
+        console.error('Erro ao acessar storage:', error);
+      }
+    }
+  });
 });
 
 /**
@@ -44,6 +84,11 @@ window.addEventListener('load', function() {
  */
 function addSortButtons() {
   try {
+    // Check if extension is enabled
+    if (!extensionEnabled) {
+      return;
+    }
+    
     // Verificar se os botões já existem para evitar duplicação
     if (document.querySelector('.vinted-sort-button')) {
       return;

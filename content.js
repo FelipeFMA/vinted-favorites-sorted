@@ -40,8 +40,19 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 // Function to remove sort buttons
 function removeSortButtons() {
+  const floatingContainer = document.getElementById('vinted-float-sort-container');
+  if (floatingContainer) {
+    floatingContainer.remove();
+    // console.log('Vinted Favorites Sorted: Floating buttons removed.');
+  }
+  // Fallback for any other buttons if necessary, though the primary target is the container
   const buttons = document.querySelectorAll('.vinted-sort-button');
-  buttons.forEach(button => button.remove());
+  buttons.forEach(button => {
+    // Ensure we don't try to remove buttons that were inside the already removed container
+    if (!floatingContainer || !floatingContainer.contains(button)) {
+      button.remove();
+    }
+  });
 }
 
 // Wait for complete page loading
@@ -89,107 +100,56 @@ function addSortButtons() {
       return;
     }
     
-    // Check if buttons already exist to avoid duplication
-    if (document.querySelector('.vinted-sort-button')) {
+    // Check if the specific floating container already exists
+    if (document.getElementById('vinted-float-sort-container')) {
+      // Optional: ensure it's visible if it was hidden by another process
+      // document.getElementById('vinted-float-sort-container').style.display = 'flex';
       return;
     }
     
-    // Find the filter/sort container - multiple strategies
-    let sortContainer = document.querySelector('button[data-testid*="sorting"]')?.parentElement;
-    
-    if (!sortContainer) {
-      // Try to find by button text
-      const buttons = Array.from(document.querySelectorAll('button'));
-      const sortButton = buttons.find(btn => 
-        btn.textContent.includes('Sort by') || 
-        btn.textContent.includes('Sort by')
-      );
-      
-      if (sortButton) {
-        sortContainer = sortButton.parentElement;
+    // Create the floating container
+    const floatingContainer = document.createElement('div');
+    floatingContainer.id = 'vinted-float-sort-container'; // Ensure ID is set
+    floatingContainer.style.cssText = 'position: fixed; bottom: 30px; left: 30px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; background: rgba(255,255,255,0.95); box-shadow: 0 2px 10px rgba(0,0,0,0.08); border-radius: 10px; padding: 16px 12px;';
+
+    const sortCurrentButton = document.createElement('button');
+    sortCurrentButton.textContent = 'Sort This Page';
+    sortCurrentButton.className = 'vinted-sort-button';
+    sortCurrentButton.style.cssText = 'padding: 8px 16px; background-color: #09B1BA; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background-color 0.3s;';
+    sortCurrentButton.addEventListener('click', sortCurrentPage);
+
+    const sortAllButton = document.createElement('button');
+    sortAllButton.textContent = 'Sort All Pages';
+    sortAllButton.className = 'vinted-sort-button';
+    sortAllButton.style.cssText = 'padding: 8px 16px; background-color: #09B1BA; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background-color 0.3s;';
+    sortAllButton.addEventListener('click', () => {
+      if (isCollecting) {
+        // console.log('Vinted Favorites Sorted: Collection already in progress.');
+        showMessage('Collection already in progress. Please wait.', true);
+        return;
       }
-    }
+      isCollecting = true;
+      allItems = [];
+      currentPage = 1;
+      try {
+        chrome.storage.local.set({
+          'isCollecting': true,
+          'vintedItems': allItems,
+          'currentPage': currentPage
+        });
+      } catch (error) {
+        console.error('Error saving state:', error);
+      }
+      estimateTotalPages();
+      collectAllPages();
+    });
+
+    floatingContainer.appendChild(sortCurrentButton);
+    floatingContainer.appendChild(sortAllButton);
+    document.body.appendChild(floatingContainer);
     
-    // Last attempt - look for filter elements
-    if (!sortContainer) {
-      sortContainer = document.querySelector('.u-flexbox.u-justify-content-flex-start.u-overflow-x-auto');
-    }
+    // console.log('Vinted Favorites Sorted: Floating buttons added');
     
-    if (sortContainer) {
-      // Instead of adding to sortContainer, always use floating container at bottom left
-      const floatingContainer = document.createElement('div');
-      floatingContainer.id = 'vinted-float-sort-container';
-      floatingContainer.style.cssText = 'position: fixed; bottom: 30px; left: 30px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; background: rgba(255,255,255,0.95); box-shadow: 0 2px 10px rgba(0,0,0,0.08); border-radius: 10px; padding: 16px 12px;';
-
-      const sortCurrentButton = document.createElement('button');
-      sortCurrentButton.textContent = 'Sort This Page';
-      sortCurrentButton.className = 'vinted-sort-button';
-      sortCurrentButton.style.cssText = 'padding: 8px 16px; background-color: #09B1BA; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background-color 0.3s;';
-      sortCurrentButton.addEventListener('click', sortCurrentPage);
-
-      const sortAllButton = document.createElement('button');
-      sortAllButton.textContent = 'Sort All Pages';
-      sortAllButton.className = 'vinted-sort-button';
-      sortAllButton.style.cssText = 'padding: 8px 16px; background-color: #09B1BA; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background-color 0.3s;';
-      sortAllButton.addEventListener('click', () => {
-        if (!isCollecting) {
-          isCollecting = true;
-          allItems = [];
-          currentPage = 1;
-          try {
-            chrome.storage.local.set({
-              'isCollecting': true,
-              'vintedItems': allItems,
-              'currentPage': currentPage
-            });
-          } catch (error) {
-            console.error('Error saving state:', error);
-          }
-          estimateTotalPages();
-          collectAllPages();
-        }
-      });
-
-      floatingContainer.appendChild(sortCurrentButton);
-      floatingContainer.appendChild(sortAllButton);
-      document.body.appendChild(floatingContainer);
-      
-      console.log('Vinted Favorites Sorted: Floating buttons added');
-    } else {
-      console.warn('Vinted Favorites Sorted: Sort container not found');
-      
-      // Create floating container as fallback
-      const floatingContainer = document.createElement('div');
-      floatingContainer.style.cssText = 'position: fixed; bottom: 30px; left: 30px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; background: rgba(255,255,255,0.95); box-shadow: 0 2px 10px rgba(0,0,0,0.08); border-radius: 10px; padding: 16px 12px;';
-      
-      const sortCurrentButton = document.createElement('button');
-      sortCurrentButton.textContent = 'Sort This Page';
-      sortCurrentButton.className = 'vinted-sort-button';
-      sortCurrentButton.style.cssText = 'padding: 8px 16px; background-color: #09B1BA; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background-color 0.3s;';
-      sortCurrentButton.addEventListener('click', sortCurrentPage);
-      
-      const sortAllButton = document.createElement('button');
-      sortAllButton.textContent = 'Sort All Pages';
-      sortAllButton.className = 'vinted-sort-button';
-      sortAllButton.style.cssText = 'padding: 8px 16px; background-color: #09B1BA; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background-color 0.3s;';
-      sortAllButton.addEventListener('click', () => {
-        if (!isCollecting) {
-          isCollecting = true;
-          allItems = [];
-          currentPage = 1;
-          
-          // Start collection
-          estimateTotalPages();
-          collectAllPages();
-        }
-      });
-      
-      floatingContainer.appendChild(sortCurrentButton);
-      floatingContainer.appendChild(sortAllButton);
-      document.body.appendChild(floatingContainer);
-      
-      console.log('Vinted Favorites Sorted: Floating buttons added');
-    }
   } catch (error) {
     console.error('Error adding buttons:', error);
   }
@@ -582,6 +542,8 @@ function finishCollection() {
  */
 function showResults(container) {
   try {
+    removeSortButtons(); // Remove sort buttons to prevent clicking on results page
+
     // Clear container
     container.innerHTML = '';
     
@@ -600,7 +562,8 @@ function showResults(container) {
     backButton.style.cssText = 'padding: 8px 16px; margin: 20px; background-color: #09B1BA; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;';
     backButton.addEventListener('click', () => {
       container.innerHTML = originalContent;
-      setTimeout(addSortButtons, 1500);
+      // Re-add sort buttons. The setTimeout might be for DOM to settle.
+      setTimeout(addSortButtons, 1500); 
     });
     
     header.appendChild(title);

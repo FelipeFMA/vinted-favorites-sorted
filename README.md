@@ -109,6 +109,27 @@ This extension was developed using pure JavaScript and standard browser extensio
 - In searches with many pages, the collection process can be time-consuming ⏳
 - The extension does not maintain state between browser sessions (except during ongoing collections) 🧠❌
 
+---
+
+
+## Please consider donating
+Bitcoin:
+`bc1qnkq7hf6r53fg73jh3awfsn6ydeh87u5cf8hs3g`
+
+![bitcoin](https://github.com/user-attachments/assets/9aaf40c6-6bdb-4480-8bdd-05b9023613d9)
+
+Ko-fi:
+https://ko-fi.com/felipefma
+
+Paypal:
+felipefmavelar@gmail.com
+
+Brazilian Pix:
+felipefmavelar@gmail.com
+
+---
+
+
 ## 📜 License
 
 This project is licensed under the GNU General Public License v3.0 (GPLv3). You can find the license [here](LICENSE).
